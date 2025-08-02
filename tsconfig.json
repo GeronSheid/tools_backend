@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES6",        // современный JS
+    "module": "commonjs",   // стандарт для Node.js
+    "outDir": "./dist",     // куда складывать скомпилированный JS
+    "rootDir": "./src",     // откуда брать исходники TS
+    "strict": true,        // строгая типизация (лучше для обучения)
+    "esModuleInterop": true // совместимость модулей
+  }
+}
