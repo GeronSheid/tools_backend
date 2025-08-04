@@ -1,6 +1,6 @@
-import { PrismaClient } from "../generated/prisma";
+import { PrismaClient } from "../../generated/prisma";
 
-declare module "../generated/prisma" {
+declare module "../../generated/prisma" {
   interface PrismaClient {
     $on(event: 'error' | 'warn', callback: (e: LogEvent) => void): void;
     $on(event: 'query', callback: (e: QueryEvent) => void): void;
