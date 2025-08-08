@@ -1,6 +1,5 @@
 import express from 'express';
-import {prisma} from './modules/prisma/prisma.service';
-import userRouter from './modules/user/User.router';
+import userRouter from './modules/user/user.router';
 
 const app = express();
 app.use(express.json());

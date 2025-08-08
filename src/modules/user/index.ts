@@ -1,5 +1,5 @@
-import userRouter from './User.router';
-import * as userController from './User.controler';
+import userRouter from './user.router';
+import * as userController from './user.controler';
 
 export default {
   userRouter,
