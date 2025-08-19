@@ -5,6 +5,8 @@
     "outDir": "./dist",     // куда складывать скомпилированный JS
     "rootDir": "./src",     // откуда брать исходники TS
     "strict": true,        // строгая типизация (лучше для обучения)
-    "esModuleInterop": true // совместимость модулей
+    "esModuleInterop": true, // совместимость модулей
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+
   }
 }

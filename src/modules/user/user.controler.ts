@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { userRepository } from "./User.repository";
+import { userRepository } from "./user.repository";
 import { CreateUserInput, UpdateUserInput } from "./user.schema";
+import { userService } from "./user.service";
 
 export const userController = {
   async getAllUsers(req: Request, res: Response) {
@@ -16,14 +17,15 @@ export const userController = {
 
   async createUser(req: Request<{}, {}, CreateUserInput>, res: Response) {
     try {
-      const existingUser = await userRepository.findByEmail(req.body.email);
-      if(existingUser) {
-        return res.status(409).json({error: 'Email already in use'})
-      }
-      const user = await userRepository.createUser(req.body);
-      res.status(201).json(user);
+      const user = await userService.createUser(req.body);
+      res.status(201).json(user)
     } catch (error) {
-      res.status(500).json({error: 'Failed to create a user'});
+      if(error instanceof Error && error.message === 'Email already in use') {
+        res.status(409).json({message: error.message})
+      } else {
+        console.error('Create user error:', error);
+        res.status(500).json({message: 'Failed to create a user'})
+      }
     }
   },
 
