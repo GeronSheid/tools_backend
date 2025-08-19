@@ -1,24 +1,12 @@
-import { CookieOptions, Request, Response } from "express";
+import { Request, Response } from "express";
 import { userRepository } from "../user/user.repository";
-import { createAccesToken, createRefreshToken, verifyRefreshToken } from "../security/jwt.service";
-import { verifyPassword } from "../security";
+import { verifyPassword, createAccesToken, verifyRefreshToken } from "../security";
 import { createUserSchema } from "../user/user.schema";
 import { fromZodError } from "zod-validation-error";
 import { loginSchema } from "./auth.schema";
 
 import User from "../user";
-
-const accessCookieOptions: CookieOptions = {
-  httpOnly: true,
-  sameSite: "strict",
-  maxAge: 15 * 60 * 1000, // 15 минут
-};
-
-const refreshCookieOptions: CookieOptions = {
-  httpOnly: true,
-  sameSite: "strict",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
-};
+import { accessCookieOptions, AuthService } from "./auth.service";
 
 export const authController = {
 
@@ -32,16 +20,11 @@ export const authController = {
       const {email, password, name} = result.data;
 
       const newUser = await User.userService.createUser({email, password, name});
+      
       if (newUser) {
-        const accesToken = createAccesToken({
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email
-        });
-        const refreshToken = createRefreshToken({ id: newUser.id });
-        res.cookie('token', accesToken, accessCookieOptions);
-        res.cookie("refreshToken", refreshToken, refreshCookieOptions);
         const { password, ...safeUser } = newUser;
+        const {accessToken, refreshToken} = AuthService.createTokens(safeUser);
+        AuthService.setAuthCookies(res, accessToken, refreshToken);
         res.status(201).json({ user: safeUser });
       }
     } catch (error) {
@@ -51,10 +34,11 @@ export const authController = {
 
   async login(req: Request, res: Response) {
     try {
+
       const result = loginSchema.safeParse(req.body);
       if(!result.success) return res.status(400).json({
         error: "Validation error",
-        deatails: fromZodError(result.error).message,
+        details: fromZodError(result.error).message,
       });
       const { email, password } = result.data;
 
@@ -64,18 +48,15 @@ export const authController = {
       const isPasswordValid = await verifyPassword(password, user.password);
       if (!isPasswordValid) return res.status(401).json({ error: "Неверный пароль" });
 
-      const accesToken = createAccesToken({
+      const {accessToken, refreshToken} = AuthService.createTokens({
         id: user.id,
         name: user.name,
         email: user.email
-      });
-      const refreshToken = createRefreshToken({ id: user.id });
-
-      res.cookie("accessToken", accesToken, accessCookieOptions);
-      res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+      })
+      AuthService.setAuthCookies(res, accessToken, refreshToken);
 
       const { password: _, ...safeUser } = user;
-      res.status(201).json({ user: safeUser });
+      res.status(200).json({ user: safeUser });
     } catch (error) {
       return res.status(500).json({ error: error }); //Дотипизировать ошибки
     }
