@@ -1,8 +1,12 @@
 import { CookieOptions, Request, Response } from "express";
 import { userRepository } from "../user/user.repository";
 import { createAccesToken, createRefreshToken, verifyRefreshToken } from "../security/jwt.service";
-import User from "../user";
 import { verifyPassword } from "../security";
+import { createUserSchema } from "../user/user.schema";
+import { fromZodError } from "zod-validation-error";
+import { loginSchema } from "./auth.schema";
+
+import User from "../user";
 
 const accessCookieOptions: CookieOptions = {
   httpOnly: true,
@@ -20,7 +24,14 @@ export const authController = {
 
   async register(req: Request, res: Response) {
     try {
-      const newUser = await User.userService.createUser(req.body);
+      const result = createUserSchema.safeParse(req.body);
+      if(!result.success) return res.status(400).json({
+        error: "Validation error",
+        deatails: fromZodError(result.error).message,
+      });
+      const {email, password, name} = result.data;
+
+      const newUser = await User.userService.createUser({email, password, name});
       if (newUser) {
         const accesToken = createAccesToken({
           id: newUser.id,
@@ -40,7 +51,13 @@ export const authController = {
 
   async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
+      const result = loginSchema.safeParse(req.body);
+      if(!result.success) return res.status(400).json({
+        error: "Validation error",
+        deatails: fromZodError(result.error).message,
+      });
+      const { email, password } = result.data;
+
       const user = await userRepository.findByEmail(email);
       if (!user) return res.status(404).json({ error: "Пользователь не найден" });
 
