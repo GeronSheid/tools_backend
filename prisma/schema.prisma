@@ -20,3 +20,26 @@ model User {
   name String
   password String
 }
+
+model Tool {
+  id Int @id @default(autoincrement())
+  name String
+  toolType ToolType
+  toolName String
+  brand String?
+  model String?
+  dayPrice Float
+  weekPrice Float
+  deposit Float
+  stock Int
+  imageUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ToolType {
+  HAND
+  HEAVY
+  GENERATOR
+  CONSTRUCTION
+}
