@@ -2,7 +2,7 @@ import { ToolType } from '../../generated/prisma';
 import {prisma} from '../prisma/prisma.service';
 import { CreateTool, Tool, UpdateTool } from './tools.schema';
 // import { Tool } from '../../generated/prisma';
-export const userRepository = {
+export const toolsRepository = {
   async findAll(): Promise<Tool[]> {
     return await prisma.tool.findMany();
   },
