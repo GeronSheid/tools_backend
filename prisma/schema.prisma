@@ -38,8 +38,8 @@ model Tool {
 }
 
 enum ToolType {
-  HAND
-  HEAVY
-  GENERATOR
-  CONSTRUCTION
+  hand
+  heavy
+  generator
+  construction
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { toolsRepository } from "./tools.repository";
-import { UpdateTool } from "./tools.schema";
+import { ToolType, UpdateTool } from "./tools.schema";
 
 
 export const toolsController = {
@@ -9,46 +9,21 @@ export const toolsController = {
     res.json(result);
   },
 
-  async getToolById(req: Request, res: Response) {
+  async getToolById(req: Request<{id: string}, {}, {}>, res: Response) {
     try {
       const {id} = req.params;
-      const tool = await toolsRepository.findToolById(+id);
+      const toolId = parseInt(id, 10);
+      const tool = await toolsRepository.findToolById(toolId);
       tool ? res.json(tool) : res.status(405).json({error: "Tool not found"});
     } catch (error) {
       res.status(500).json(error);
     }
   },
 
-  async getHandTools(req: Request, res: Response) {
+  async getTypeTools(req: Request<{type: ToolType}, {}, {}>, res: Response) {
     try {
-      const tools = await toolsRepository.findToolsByType('HAND');
-      res.json(tools);
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  },
-
-  async getHeavyTools(req: Request, res: Response) {
-    try {
-      const tools = await toolsRepository.findToolsByType('HEAVY');
-      res.json(tools);
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  },
-
-  async getGeneratorTools(req: Request, res: Response) {
-    try {
-      const tools = await toolsRepository.findToolsByType('GENERATOR');
-      res.json(tools);
-    } catch (error) {
-      res.status(500).json(error);
-    }
-  },
-
-  async getConstructionTools(req: Request, res: Response) {
-    try {
-      const tools = await toolsRepository.findToolsByType('CONSTRUCTION');
+      const {type} = req.params;
+      const tools = await toolsRepository.findToolsByType(type);
       res.json(tools);
     } catch (error) {
       res.status(500).json(error);
@@ -64,18 +39,22 @@ export const toolsController = {
     }
   },
 
-  async updateTool(req: Request<{id: number}, {}, UpdateTool>, res: Response) {
+  async updateTool(req: Request<{id: string}, {}, UpdateTool>, res: Response) {
     try {
-      const tool = await toolsRepository.updateTool(req.params.id, req.body);
+      const {id} = req.params;
+      const toolId = parseInt(id, 10);
+      const tool = await toolsRepository.updateTool(toolId, req.body);
       tool ? res.json(tool) : res.status(404).json({error: 'Tool not found'});
     } catch (error) {
       res.status(500).json(error);
     }
   },
 
-  async deleteTool(req: Request<{id: number}, {}, {}>, res: Response) {
+  async deleteTool(req: Request<{id: string}, {}, {}>, res: Response) {
     try {
-      await toolsRepository.deleteTool(req.params.id);
+      const {id} = req.params;
+      const toolId = parseInt(id, 10);
+      await toolsRepository.deleteTool(toolId);
       res.status(204).send();
     } catch (error) {
       res.status(404).json({error: 'Tool not found'});

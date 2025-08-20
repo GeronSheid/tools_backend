@@ -1,10 +1,10 @@
 import {z} from 'zod';
 
 export const ToolTypeSchema = z.union([
-    z.literal('HAND'),
-    z.literal('HEAVY'),
-    z.literal('GENERATOR'),
-    z.literal('CONSTRUCTION')
+    z.literal('hand'),
+    z.literal('heavy'),
+    z.literal('generator'),
+    z.literal('construction')
   ])
 
 export const ToolSchema = z.object({
