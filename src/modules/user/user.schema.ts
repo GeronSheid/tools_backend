@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export const UserSchema = z.object({
   id: z.number(),
-  email: z.string().email("Invalid email format"),
+  email: z.email("Invalid email format"),
   name: z.string().min(2, "Name must be at least 2 characters long").max(50, "Name is too long"),
   password: z.string().min(4, "Password must be at least 4 characters long").max(20, "Password is too long"),
   createdAt: z.date(),
