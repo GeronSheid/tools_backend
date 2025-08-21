@@ -1,9 +1,16 @@
 import userRouter from './user.router';
-import * as userController from './user.controler';
+
+import { userController } from './user.controler';
+import { userRepository } from './user.repository';
+import * as userSchema from './user.schema';
 import { userService } from './user.service';
 
-export default {
-  userRouter,
+export default userRouter;
+
+export const UserModule = {
   controller: userController,
-  userService
-};
+  repository: userRepository,
+  schema: userSchema,
+  service: userService
+}
+

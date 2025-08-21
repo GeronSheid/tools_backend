@@ -1,5 +1,5 @@
 import {prisma} from '../prisma/prisma.service';
-import type { User, CreateUser, UpdateUserData } from './user.types';
+import type { User, CreateUser, UpdateUser } from './user.schema';
 
 export const userRepository = {
   async findAll(): Promise<User[]> {
@@ -18,7 +18,7 @@ export const userRepository = {
     return await prisma.user.create({data})
   },
 
-  async update(id: number, data: UpdateUserData): Promise<User> {
+  async update(id: number, data: UpdateUser): Promise<User> {
     return await prisma.user.update({where: {id}, data})
   },
 

@@ -1,6 +1,6 @@
 import { hashPassword } from "../security";
 import { userRepository } from "./user.repository";
-import { CreateUser } from "./user.types";
+import { CreateUser } from "./user.schema"
 
 export const userService = {
   async createUser(data: CreateUser) {

@@ -1,11 +1,13 @@
-import * as toolsController from './tools.controller';
-import * as toolsRepository from './tools.repository';
-import * as toolsRouter from './tools.router';
-import * as toolsSchema from './tools.schema';
+import toolsRouter from "./tools.router";
 
-export default {
-  toolsController,
-  toolsRepository,
-  toolsRouter,
-  toolsSchema
+import * as toolsSchema from "./tools.schema";
+import { toolsRepository } from "./tools.repository";
+import { toolsController } from "./tools.controller";
+
+export default toolsRouter;
+
+export const ToolsModule = {
+  controller: toolsController,
+  repository: toolsRepository,
+  schema: toolsSchema
 }

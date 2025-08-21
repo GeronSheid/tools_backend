@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { userRepository } from "./user.repository";
-import { CreateUserInput, UpdateUserInput } from "./user.schema";
+import { CreateUser, UpdateUser } from "./user.schema";
 import { userService } from "./user.service";
 
 export const userController = {
@@ -11,11 +11,12 @@ export const userController = {
 
   async getUser(req: Request<{id: string}>, res: Response) {
     const {id} = req.params;
-    const user = await userRepository.findUserById(+id);
+    const userId = parseInt(id, 10);
+    const user = await userRepository.findUserById(userId);
     user ? res.json(user) : res.status(405).json({error: 'User not found'});
   },
 
-  async createUser(req: Request<{}, {}, CreateUserInput>, res: Response) {
+  async createUser(req: Request<{}, {}, CreateUser>, res: Response) {
     try {
       const user = await userService.createUser(req.body);
       res.status(201).json(user)
@@ -29,18 +30,22 @@ export const userController = {
     }
   },
 
-  async updateUser(req: Request<{id: number}, {}, UpdateUserInput>, res: Response) {
+  async updateUser(req: Request<{id: string}, {}, UpdateUser>, res: Response) {
     try {
-      const user = await userRepository.update(req.params.id, req.body);
+      const {id} = req.params;
+      const userId = parseInt(id, 10);
+      const user = await userRepository.update(userId, req.body);
       res.json(user);
     } catch (error) {
       res.status(404).json({error: 'User not found'});
     }
   },
 
-  async deleteUser(req: Request<{id: number}>, res: Response) {
+  async deleteUser(req: Request<{id: string}>, res: Response) {
     try {
-      await userRepository.delete(req.params.id);
+      const {id} = req.params;
+      const userId = parseInt(id, 10);
+      await userRepository.delete(userId);
       res.status(204).send();
     } catch (error) {
       res.status(404).json({error: 'User not found'});
