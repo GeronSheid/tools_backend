@@ -14,7 +14,7 @@ export const refreshCookieOptions: CookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
 };
 
-export const AuthService = {
+export const authService = {
   createTokens(user: {id: string | number, name: string | null, email: string}) {
     const accessToken = createAccesToken(user);
     const refreshToken = createRefreshToken({id: user.id});

@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
 import { userRepository } from "../user/user.repository";
 import { verifyPassword, createAccesToken, verifyRefreshToken } from "../security";
-import { accessCookieOptions, AuthService } from "./auth.service";
-import User from "../user";
+import { accessCookieOptions, authService } from "./auth.service";
+
+import { UserModule } from "../user";
 
 export const authController = {
 
   async register(req: Request, res: Response) {
     try {
       const {email, password, name} = req.body;
-      const newUser = await User.userService.createUser({email, password, name});
+      const newUser = await UserModule.service.createUser({email, password, name});
       
       if (newUser) {
         const { password, ...safeUser } = newUser;
-        const {accessToken, refreshToken} = AuthService.createTokens(safeUser);
-        AuthService.setAuthCookies(res, accessToken, refreshToken);
+        const {accessToken, refreshToken} = authService.createTokens(safeUser);
+        authService.setAuthCookies(res, accessToken, refreshToken);
         res.status(201).json({ user: safeUser });
       }
     } catch (error) {
@@ -32,12 +33,12 @@ export const authController = {
       const isPasswordValid = await verifyPassword(password, user.password);
       if (!isPasswordValid) return res.status(401).json({ error: "Неверный пароль" });
 
-      const {accessToken, refreshToken} = AuthService.createTokens({
+      const {accessToken, refreshToken} = authService.createTokens({
         id: user.id,
         name: user.name,
         email: user.email
       })
-      AuthService.setAuthCookies(res, accessToken, refreshToken);
+      authService.setAuthCookies(res, accessToken, refreshToken);
 
       const { password: _, ...safeUser } = user;
       res.status(200).json({ user: safeUser });
