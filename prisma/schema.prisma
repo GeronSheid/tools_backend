@@ -22,3 +22,26 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Tool {
+  id Int @id @default(autoincrement())
+  name String
+  toolType ToolType
+  toolName String
+  brand String?
+  model String?
+  dayPrice Float
+  weekPrice Float
+  deposit Float
+  stock Int
+  imageUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ToolType {
+  hand
+  heavy
+  generator
+  construction
+}
