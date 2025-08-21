@@ -9,8 +9,8 @@ const userRouter = express.Router();
 
 userRouter.get('/', authMiddleware, userController.getAllUsers);
 userRouter.get('/:id', authMiddleware, userController.getUser);
-userRouter.post('/', validateBody(createUserSchema), authController.register);
-userRouter.put('/:id',  userController.updateUser);
-userRouter.delete('/:id', userController.deleteUser);
+userRouter.post('/', authMiddleware, validateBody(createUserSchema), authController.register);
+userRouter.put('/:id', authMiddleware, validateBody(updateUserSchema),  userController.updateUser);
+userRouter.delete('/:id', authMiddleware, userController.deleteUser);
 
 export default userRouter;
