@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { userRepository } from "../user/user.repository";
 import { verifyPassword, createAccesToken, verifyRefreshToken } from "../security";
-
-import User from "../user";
 import { accessCookieOptions, AuthService } from "./auth.service";
+import User from "../user";
 
 export const authController = {
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { userRepository } from "./user.repository";
-import { CreateUserInput, UpdateUserInput } from "./user.schema";
+import { CreateUser, UpdateUser } from "./user.schema";
 import { userService } from "./user.service";
 
 export const userController = {
@@ -16,7 +16,7 @@ export const userController = {
     user ? res.json(user) : res.status(405).json({error: 'User not found'});
   },
 
-  async createUser(req: Request<{}, {}, CreateUserInput>, res: Response) {
+  async createUser(req: Request<{}, {}, CreateUser>, res: Response) {
     try {
       const user = await userService.createUser(req.body);
       res.status(201).json(user)
@@ -30,7 +30,7 @@ export const userController = {
     }
   },
 
-  async updateUser(req: Request<{id: string}, {}, UpdateUserInput>, res: Response) {
+  async updateUser(req: Request<{id: string}, {}, UpdateUser>, res: Response) {
     try {
       const {id} = req.params;
       const userId = parseInt(id, 10);
